@@ -2,39 +2,18 @@ import os
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
-TOKEN = os.environ.get("8714800328:AAFuj_8fUL4NmgNERTnRb3TmTe7wsjEfo9Y")
+TOKEN = os.environ.get("BOT_TOKEN=8714800328:AAFuj_8fUL4NmgNERTnRb3TmTe7wsjEfo9Y")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Bot is working ✅")
+    await update.message.reply_text("Bot is working")
 
-app = ApplicationBuilder().token(TOKEN).build()
-app.add_handler(CommandHandler("start", start))
+def main():
+    app = ApplicationBuilder().token(TOKEN).build()
+    app.add_handler(CommandHandler("start", start))
+    app.run_polling()
 
 if __name__ == "__main__":
-    app.run_polling()
-    elif "Salary" in text:
-        await update.message.reply_text("💰 Salary = $500 + Bonus")
-
-app = ApplicationBuilder().token(TOKEN).build()
-
-app.add_handler(CommandHandler("start", start))
-app.add_handler(MessageHandler(filters.TEXT, handle))
-
-app.run_polling()    await update.message.reply_text("👋 Welcome to Mr. Why HR System", reply_markup=menu)
-
-async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.effective_user
-    text = update.message.text
-    today = datetime.now().strftime("%Y-%m-%d")
-    now = datetime.now().strftime("%H:%M")
-
-    if "Start Work" in text:
-        cur.execute(
-            "INSERT INTO attendance(user_id,name,date,time,status) VALUES(?,?,?,?,?)",
-            (user.id, user.full_name, today, now, "IN")
-        )
-        db.commit()
-        await update.message.reply_text("✅ Started Work")
+    main()        await update.message.reply_text("✅ Started Work")
 
     elif "Leave Work" in text:
         cur.execute(
