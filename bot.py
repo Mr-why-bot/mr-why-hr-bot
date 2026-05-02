@@ -132,7 +132,7 @@ async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
 # Run Bot
-app = ApplicationBuilder().token(TOKEN).build()
+app = ApplicationBuilder().token(8714800328:AAFuj_8fUL4NmgNERTnRb3TmTe7wsjEfo9Y).build()
 
 app.add_handler(CommandHandler("start", start))
 app.add_handler(MessageHandler(filters.TEXT, handle))
@@ -143,7 +143,7 @@ from datetime import datetime
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
-TOKEN = os.getenv("BOT_TOKEN")
+TOKEN = os.getenv("8714800328:AAFuj_8fUL4NmgNERTnRb3TmTe7wsjEfo9Y")
 
 # Database
 db = sqlite3.connect("hr.db", check_same_thread=False)
@@ -216,7 +216,7 @@ async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
 # Run Bot
-app = ApplicationBuilder().token(TOKEN).build()
+app = ApplicationBuilder().token(8714800328:AAFuj_8fUL4NmgNERTnRb3TmTe7wsjEfo9Y).build()
 
 app.add_handler(CommandHandler("start", start))
 app.add_handler(MessageHandler(filters.TEXT, handle))
