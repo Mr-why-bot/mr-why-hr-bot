@@ -84,7 +84,7 @@ def main():
     app.run_polling()
 
 if __name__ == "__main__":
-    main()app = ApplicationBuilder().token(TOKEN).build()
+    main()app = ApplicationBuilder().token(8714800328:AAFuj_8fUL4NmgNERTnRb3TmTe7wsjEfo9Y).build()
 
 app.add_handler(CommandHandler("start", start))
 app.add_handler(MessageHandler(filters.TEXT, handle))
