@@ -1,40 +1,49 @@
 import os
-import sqlite3
-from datetime import datetime
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
 TOKEN = os.getenv("8714800328:AAFuj_8fUL4NmgNERTnRb3TmTe7wsjEfo9Y")
 
-# Database
-db = sqlite3.connect("hr.db", check_same_thread=False)
-cur = db.cursor()
-
-cur.execute("""
-CREATE TABLE IF NOT EXISTS attendance(
-id INTEGER PRIMARY KEY AUTOINCREMENT,
-user_id TEXT,
-name TEXT,
-date TEXT,
-time TEXT,
-status TEXT
-)
-""")
-db.commit()
-
-# Menu
 menu = ReplyKeyboardMarkup(
 [
-["🟢 Start Work / ចូលធ្វើការ"],
-["🔴 Leave Work / ចេញការងារ"],
-["📊 Report / របាយការណ៍"],
-["💰 Salary / ប្រាក់ខែ"]
+["🟢 Start Work"],
+["🔴 Leave Work"],
+["📊 Report"],
+["💰 Salary"]
 ],
 resize_keyboard=True
 )
 
+users = {}
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("👋 Welcome to Mr. Why HR System", reply_markup=menu)
+    await update.message.reply_text("Welcome Mr Why Bot", reply_markup=menu)
+
+async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user.id
+    text = update.message.text
+
+    if "Start Work" in text:
+        users[user] = "IN"
+        await update.message.reply_text("✅ Checked In")
+
+    elif "Leave Work" in text:
+        users[user] = "OUT"
+        await update.message.reply_text("⛔ Checked Out")
+
+    elif "Report" in text:
+        total = list(users.values()).count("IN")
+        await update.message.reply_text(f"📊 Today: {total} working")
+
+    elif "Salary" in text:
+        await update.message.reply_text("💰 Salary = $500 + Bonus")
+
+app = ApplicationBuilder().token(TOKEN).build()
+
+app.add_handler(CommandHandler("start", start))
+app.add_handler(MessageHandler(filters.TEXT, handle))
+
+app.run_polling()    await update.message.reply_text("👋 Welcome to Mr. Why HR System", reply_markup=menu)
 
 async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
