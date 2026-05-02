@@ -1,40 +1,17 @@
 import os
-from telegram import Update, ReplyKeyboardMarkup
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
-TOKEN = os.getenv("8714800328:AAFuj_8fUL4NmgNERTnRb3TmTe7wsjEfo9Y")
-
-menu = ReplyKeyboardMarkup(
-[
-["🟢 Start Work"],
-["🔴 Leave Work"],
-["📊 Report"],
-["💰 Salary"]
-],
-resize_keyboard=True
-)
-
-users = {}
+TOKEN = os.environ.get("8714800328:AAFuj_8fUL4NmgNERTnRb3TmTe7wsjEfo9Y")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Welcome Mr Why Bot", reply_markup=menu)
+    await update.message.reply_text("Bot is working ✅")
 
-async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.effective_user.id
-    text = update.message.text
+app = ApplicationBuilder().token(TOKEN).build()
+app.add_handler(CommandHandler("start", start))
 
-    if "Start Work" in text:
-        users[user] = "IN"
-        await update.message.reply_text("✅ Checked In")
-
-    elif "Leave Work" in text:
-        users[user] = "OUT"
-        await update.message.reply_text("⛔ Checked Out")
-
-    elif "Report" in text:
-        total = list(users.values()).count("IN")
-        await update.message.reply_text(f"📊 Today: {total} working")
-
+if __name__ == "__main__":
+    app.run_polling()
     elif "Salary" in text:
         await update.message.reply_text("💰 Salary = $500 + Bonus")
 
