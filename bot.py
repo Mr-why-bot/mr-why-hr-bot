@@ -4,10 +4,9 @@ from datetime import datetime
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
-# Load Token
-TOKEN = os.environ.get("8227579183:AAHs7nvKMPMFh_UllusgKhJMaoMPgMDsmoQ")
+TOKEN = os.getenv("8227579183:AAHs7nvKMPMFh_UllusgKhJMaoMPgMDsmoQ")
 
-# Database setup
+# Database
 db = sqlite3.connect("hr.db", check_same_thread=False)
 cur = db.cursor()
 
@@ -25,63 +24,62 @@ db.commit()
 
 # Menu Buttons
 menu = ReplyKeyboardMarkup(
-    [
-        ["🟢 Start Work"],
-        ["🔴 Leave Work"],
-        ["📊 Report"],
-        ["💰 Salary"]
-    ],
-    resize_keyboard=True
+[
+["🟢 Start Work / ចូលធ្វើការ"],
+["🔴 Leave Work / ចេញការងារ"],
+["📊 Report / របាយការណ៍"],
+["💰 Salary / ប្រាក់ខែ"]
+],
+resize_keyboard=True
 )
 
 # Start Command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("👋 Welcome Mr Why HR Bot", reply_markup=menu)
+    await update.message.reply_text(
+        "👋 Welcome to Mr. Why HR System",
+        reply_markup=menu
+    )
 
-# Handle Buttons
+# Button Actions
 async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     text = update.message.text
-
     today = datetime.now().strftime("%Y-%m-%d")
     now = datetime.now().strftime("%H:%M")
 
-    if text == "🟢 Start Work":
+    if "Start Work" in text:
         cur.execute(
             "INSERT INTO attendance(user_id,name,date,time,status) VALUES(?,?,?,?,?)",
             (user.id, user.full_name, today, now, "IN")
         )
         db.commit()
-        await update.message.reply_text("✅ Checked In")
+        await update.message.reply_text("✅ Started Work Successfully")
 
-    elif text == "🔴 Leave Work":
+    elif "Leave Work" in text:
         cur.execute(
             "INSERT INTO attendance(user_id,name,date,time,status) VALUES(?,?,?,?,?)",
             (user.id, user.full_name, today, now, "OUT")
         )
         db.commit()
-        await update.message.reply_text("⛔ Checked Out")
+        await update.message.reply_text("⛔ Left Work Successfully")
 
-    elif text == "📊 Report":
+    elif "Report" in text:
         cur.execute(
             "SELECT COUNT(DISTINCT user_id) FROM attendance WHERE date=? AND status='IN'",
             (today,)
         )
         total = cur.fetchone()[0]
-        await update.message.reply_text(f"📊 Today Working: {total}")
+        await update.message.reply_text(f"📊 Today Present: {total}")
 
-    elif text == "💰 Salary":
-        await update.message.reply_text("💰 Salary = $500 + $50 Bonus")
+    elif "Salary" in text:
+        await update.message.reply_text(
+            "💰 Monthly Salary\nBase = $500\nBonus = $50 (Full Attendance)"
+        )
 
 # Run Bot
-def main():
-    app = ApplicationBuilder().token(TOKEN).build()
+app = ApplicationBuilder().token(TOKEN).build()
 
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.TEXT, handle))
+app.add_handler(CommandHandler("start", start))
+app.add_handler(MessageHandler(filters.TEXT, handle))
 
-    print("Bot is running...")
-    app.run_polling()
-
-if __name__ == "__main__":
-    main()
+app.run_polling()
